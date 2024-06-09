@@ -27,6 +27,21 @@ namespace KolokwiumDF.Controllers
             
             return Ok(result);
         }
+        
+        [HttpPost("{idClient:int},{idSubscription:int},{payment:int}")]
+        public async Task<IActionResult> AddData(int idClient, int idSubscription, int payment)
+        {
+            var result = await _clientRepository.AddDataAsync(idClient, idSubscription, payment);
+
+            if (result == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+
 
     }
 }

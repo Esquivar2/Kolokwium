@@ -2,6 +2,7 @@
 using KolokwiumDF.Models;
 using KolokwiumDF.Models.DTO;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Numerics;
 
 namespace KolokwiumDF.Repositories
@@ -42,6 +43,39 @@ namespace KolokwiumDF.Repositories
             
 
             return clientDTO;
+        }
+
+        public async Task<int> AddDataAsync(int idClient, int idSubscription, int payment)
+        {
+            var client = await _context
+                .Clients
+                .FirstOrDefaultAsync(e => e.IdClient == idClient);
+
+            if (client == null)
+            {
+                return 0;
+            }
+
+            var subscription = await _context
+                .Subscriptions
+                .FirstOrDefaultAsync(e => e.IdSubscription == idSubscription);
+
+            if (subscription == null)
+            {
+                return 0;
+            }
+
+            if(subscription.EndTime <  DateTime.UtcNow)
+            {
+                return 0;
+            }
+
+            if (subscription.Payments.Count == 0)
+            {
+                return 0;
+            }
+
+            return 1;
         }
     }
 }
